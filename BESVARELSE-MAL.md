@@ -1,10 +1,10 @@
 # Besvarelse - Refleksjon og Analyse
 
-**Student:** [Ditt navn]
+**Student:** Felix Haga
 
-**Studentnummer:** [Ditt studentnummer]
+**Studentnummer:** studenNr: fehag7267
 
-**Dato:** [Innleveringsdato]
+**Dato:** 01/03/26
 
 ---
 
@@ -12,81 +12,96 @@
 
 ### Oppgave 1.1: Entiteter og attributter
 
-**Identifiserte entiteter:**
-
-[Skriv ditt svar her - list opp alle entitetene du har identifisert]
-
-**Attributter for hver entitet:**
-
-[Skriv ditt svar her - list opp attributtene for hver entitet]
-
----
+jeg valgte fire Entiteter som jeg lagde ved hjelp av mermaid live.
+bySykkelSystem
+kunde{
+SERIAL kunde_id pk
+VARCHAR(50) fornavn
+VARCHAR(50) etternavn
+varchar(255) epost UNIQUE
+VARCHAR(11) telefonnummer UNIQUE
+VARCHAR(100) betalingsinfo
+}
+stasjon{
+SERIAL stasjon_id pk
+varchar(30) navn
+INTEGER antall_låser
+}
+sykkel{
+VARCHAR(20) sykkel_id pk
+timestamp oprettet
+}
+utleie{
+SERIAL utleie_id pk
+SERIAL kunde_id 
+VARCHAR(20) sykkel_id 
+int utlevert_stasjon 
+int innlevert_stasjon 
+timestamp utlevert
+timestamp innlevert 
+numeric(12,2) leiebeløp
+}
 
 ### Oppgave 1.2: Datatyper og `CHECK`-constraints
 
-**Valgte datatyper og begrunnelser:**
+varchar valgt til attributtene til kunde. telefonnummer er det nødvendig for få med telefonnumre fra andre land hvis det skal være nødvendig. 
+betalingsinformasjon var jeg usikker på, men fant ut at det er mest gunstig for valg av type.
 
-[Skriv ditt svar her - forklar hvilke datatyper du har valgt for hver attributt og hvorfor]
+varchar(255) epost - kan ikke starte på @
+fornavn og etternavn kan ikke være null
+timestamp utlevert kan ikke være null
+id og navn kan ikke være null
+Epost skal ha riktig ende og kan ikke starte på @
+telefonnummer skal begynne på '+' og skal ha riktig lengde
 
-**`CHECK`-constraints:**
-
-[Skriv ditt svar her - list opp alle CHECK-constraints du har lagt til og forklar hvorfor de er nødvendige]
-
-**ER-diagram:**
-
-[Legg inn mermaid-kode eller eventuelt en bildefil fra `mermaid.live` her]
-
----
+mermaid kode lagt til i forrige oppgave
 
 ### Oppgave 1.3: Primærnøkler
 
 **Valgte primærnøkler og begrunnelser:**
 
-[Skriv ditt svar her - forklar hvilke primærnøkler du har valgt for hver entitet og hvorfor]
+kunde_id og sykkel_id skal ha primærnøkkel, hver sykkel og kunde skal ha en unik id.
+stasjon_id skal ha pk - dette av samme grunn, det gjør at vi kan vite nøyaktig hvor hver sykkel er parkert.
+utleie_id er spesifikt for hver utleie og skal derfor ha pk.
+
 
 **Naturlige vs. surrogatnøkler:**
 
-[Skriv ditt svar her - diskuter om du har brukt naturlige eller surrogatnøkler og hvorfor]
-
-**Oppdatert ER-diagram:**
-
-[Legg inn mermaid-kode eller eventuelt en bildefil fra `mermaid.live` her]
-
----
+kunde_id setter jeg som surrogat siden telefonnummer og epost kan endres
+sykkel_id er naturlig, den skal aldri endres så derfor gir det mening at den er naturlig.
+utleie_id er surrogat siden det er ikke en naturlig kobling
+stasjon_id er surrgat fordi navn kan eventuelt endres i fremtiden
 
 ### Oppgave 1.4: Forhold og fremmednøkler
 
 **Identifiserte forhold og kardinalitet:**
 
-[Skriv ditt svar her - list opp alle forholdene mellom entitetene og angi kardinalitet]
+sykkel er en-til-mange til utleie, en sykkel kan bli leid ut flere ganger.
+utleie til sykkel er det mange-til-en, det kan være flere utleier til en sykkel over tid.
+stasjon til utleie er en-til-mange, det kan leies ut i flertall fra en stasjon.
+fra utleie til stasjon er det mange-til-en, utleie startes og fra en stasjon. Det avsluttes også til en stasjon.
 
 **Fremmednøkler:**
 
-[Skriv ditt svar her - list opp alle fremmednøklene og forklar hvordan de implementerer forholdene]
-
-**Oppdatert ER-diagram:**
-
-[Legg inn mermaid-kode eller eventuelt en bildefil fra `mermaid.live` her]
-
----
+jeg vil ha en fk i utleie.kunde_id fra kunde_id
+en fk i utleie.sykkel_id fra sykkel_id
+og en fra utlevert og innlevert stasjon_id i utleie fra stasjon_id
 
 ### Oppgave 1.5: Normalisering
 
+
+
 **Vurdering av 1. normalform (1NF):**
 
-[Skriv ditt svar her - forklar om datamodellen din tilfredsstiller 1NF og hvorfor]
+Modellen oppfyller først normal siden hver tabell har atomære verdier. Hvert felt i tabellene inneholder kun en verdi.
 
 **Vurdering av 2. normalform (2NF):**
 
-[Skriv ditt svar her - forklar om datamodellen din tilfredsstiller 2NF og hvorfor]
+For at en tabell skal oppfylle 2NF må den tilfredstille 1NF og ikke ha partielle avhengigheter. Alle kolonner er avhengig av hele primærnøkkel i id i sykkel, kunde og stasjon.
 
 **Vurdering av 3. normalform (3NF):**
 
-[Skriv ditt svar her - forklar om datamodellen din tilfredsstiller 3NF og hvorfor]
-
-**Eventuelle justeringer:**
-
-[Skriv ditt svar her - hvis modellen ikke var på 3NF, forklar hvilke justeringer du har gjort]
+En tabell oppfyller 3NF hvis den er på 2NF og ikke har noen transitive avhengigheter. Altså at ikke-nøkkel attributter ikke er avhengig av andre ikke nøkkel attributter, modellen har ikke det.
 
 ---
 
@@ -96,15 +111,15 @@
 
 **Plassering av SQL-skript:**
 
-[Bekreft at du har lagt SQL-skriptet i `init-scripts/01-init-database.sql`]
+skriptet ligger i `init-scripts/01-init-database.sql`
 
 **Antall testdata:**
 
-- Kunder: [antall]
-- Sykler: [antall]
-- Sykkelstasjoner: [antall]
-- Låser: [antall]
-- Utleier: [antall]
+- Kunder: 5
+- Sykler: 100
+- Sykkelstasjoner: 5
+- Låser: 100 - 20 per stasjon
+- Utleier: 50
 
 ---
 
@@ -112,7 +127,27 @@
 
 **Dokumentasjon av vellykket kjøring:**
 
-[Skriv ditt svar her - f.eks. skjermbilder eller output fra terminalen som viser at databasen ble opprettet uten feil]
+data1500-postgres  | /usr/local/bin/docker-entrypoint.sh: running /docker-entrypoint-initdb.d/01-init-database.sql
+data1500-postgres  | DROP TABLE
+data1500-postgres  | psql:/docker-entrypoint-initdb.d/01-init-database.sql:8: NOTICE:  table "utleie" does not exist, skipping
+data1500-postgres  | psql:/docker-entrypoint-initdb.d/01-init-database.sql:9: NOTICE:  table "kunde" does not exist, skipping
+data1500-postgres  | DROP TABLE
+data1500-postgres  | psql:/docker-entrypoint-initdb.d/01-init-database.sql:10: NOTICE:  table "sykkel" does not exist, skipping
+data1500-postgres  | DROP TABLE
+data1500-postgres  | psql:/docker-entrypoint-initdb.d/01-init-database.sql:11: NOTICE:  table "stasjon" does not exist, skipping
+data1500-postgres  | DROP TABLE
+data1500-postgres  | CREATE TABLE
+data1500-postgres  | CREATE TABLE
+data1500-postgres  | CREATE TABLE
+data1500-postgres  | CREATE TABLE
+data1500-postgres  | INSERT 0 5
+data1500-postgres  | INSERT 0 5
+data1500-postgres  | INSERT 0 100
+data1500-postgres  | INSERT 0 50
+data1500-postgres  |          status         
+data1500-postgres  | ------------------------
+data1500-postgres  |  Database initialisert!
+data1500-postgres  | (1 row)
 
 **Spørring mot systemkatalogen:**
 
@@ -126,9 +161,8 @@ ORDER BY table_name;
 
 **Resultat:**
 
-```
-[Skriv resultatet av spørringen her - list opp alle tabellene som ble opprettet]
-```
+
+4 rows retrieved starting from 1 in 647 ms - er output i 'terminalen'. I table_name ble det laget 4 tabeller:1.kunde 2.stasjon 3.sykkel 4.utleie.
 
 ---
 
@@ -138,35 +172,38 @@ ORDER BY table_name;
 
 **SQL for å opprette rolle:**
 
-```sql
-[Skriv din SQL-kode for å opprette rollen 'kunde' her]
-```
+CREATE ROLE kunde;
 
 **SQL for å opprette bruker:**
 
-```sql
-[Skriv din SQL-kode for å opprette brukeren 'kunde_1' her]
-```
+CREATE USER kunde_1 WITH PASSWORD 'passordmedbolle';
+GRANT kunde TO kunde_1;
 
 **SQL for å tildele rettigheter:**
 
-```sql
-[Skriv din SQL-kode for å tildele rettigheter til rollen her]
-```
-
----
+GRANT SELECT ON stasjon, sykkel, utleie TO kunde;
+GRANT SELECT (kunde_id, fornavn, etternavn, epost) ON kunde TO kunde;
 
 ### Oppgave 3.2: Begrenset visning for kunder
 
 **SQL for VIEW:**
 
-```sql
-[Skriv din SQL-kode for VIEW her]
-```
+sql
+
+CREATE VIEW mine_utleier AS
+SELECT *
+FROM utleie
+WHERE kunde_id = (
+SELECT kunde_id
+FROM kunde
+WHERE epost = CURRENT_USER
+);
+
 
 **Ulempe med VIEW vs. POLICIES:**
 
-[Skriv ditt svar her - diskuter minst én ulempe med å bruke VIEW for autorisasjon sammenlignet med POLICIES]
+
+POLICIES sørger for direkte sikkerhet for hver rad, mens VIEW er det ikke det og derfor kan bli et sikkerhetsproblem.
 
 ---
 
@@ -182,17 +219,35 @@ ORDER BY table_name;
 
 **Totalt antall utleier per år:**
 
-[Skriv din utregning her]
+i høysesongen: mai til september er 5 måneder, 5 * 20 000 = 100 000 utleier.
+i mellomsesongen: 4 måneder med 5000 utleier, 4 * 5000 = 20 000 utleier.
+i lavsesongen: desember til februar er 3 måneder med 500 utleier, 3 * 500 = 1500.
+100 000 + 20 000 + 1500 = 121 500 utleier.
 
 **Estimat for lagringskapasitet:**
 
-[Skriv din utregning her - vis hvordan du har beregnet lagringskapasiteten for hver tabell]
+SELECT AVG(pg_column_size(t.*)) AS data_bytes FROM utleie AS t; jeg brukte denne kommandoen for å første finne ut hvor mange bytes det er gjennomsnittlig i hver tabell.
+kunde = 77 byte
+stasjon = 45 byte
+sykkel = 48 byte 
+utleie = 65 byte
+
+ved hjelp av kommandoen: SELECT COUNT(*) FROM stasjon; - så kan jeg finne ut hvor mange rader kunde, stasjon, sykkel og utleie har. 
+stasjon = 5
+sykkel = 100
+utleie = 121 500
+kunde = med 121 500 utleier på et år vil jeg sagt det kan være rundt 6000 kunder - det legger opp til rundt 20 bruk per kunde i gjennomsnitt på ett år. 
+
+da kan jeg finne:
+kunde = 77 * 6000 = 462000 byte
+sykkel = 48 * 100 = 4800 byte
+stasjon = 45 * 5 = 225 byte
+utleie = 65 * 121500 = 7897500 byte 
 
 **Totalt for første år:**
+462000 + 4800 + 225 + 7897500 = 8364525 byte
+8364525 byte = ca 8mb.
 
-[Skriv ditt estimat her]
-
----
 
 ### Oppgave 4.2: Flat fil vs. relasjonsdatabase
 
@@ -200,73 +255,75 @@ ORDER BY table_name;
 
 **Problem 1: Redundans**
 
-[Skriv ditt svar her - gi konkrete eksempler fra CSV-filen som viser redundans]
+Csv filen lagrer kunde-informasjon fra samme utleier utleier flere ganger som f.eks. fra Ole Hansen og Kari Olsen. Dette fyller unødvendig minne med samme informasjon.
 
 **Problem 2: Inkonsistens**
 
-[Skriv ditt svar her - forklar hvordan redundans kan føre til inkonsistens med eksempler]
+Hvis en fil er fylt med redundans som ikke er synkronisert, vil det si at kunde informasjon vil være ulikt oppdatert og kan bli hentet feil. Det kan oppstå scenario hvor en kunde vil ha to forskjellige telefonnummer.
 
 **Problem 3: Oppdateringsanomalier**
 
-[Skriv ditt svar her - diskuter slette-, innsettings- og oppdateringsanomalier]
+Litt svart i problem 2, ved redundans oppstår det flere rader med samme informasjon. Hvis en kunde vil endre, slette eller sette inn ny informasjon vil ikke alle radene blir oppdatert.
+Eksempel: Hvis Ole Hanser bytter mail eller telefonnummer, må det gjøres manuelt i alle de tre radene han er i.
 
 **Fordeler med en indeks:**
 
-[Skriv ditt svar her - forklar hvorfor en indeks ville gjort spørringen mer effektiv]
+Indeks søker mer direkte og fungerer likt som crl f. Indeks leter ikke gjennom hele filen, men istedet vil starte der for eksempel riktig kunde_id starter. Kunde_id fungerer som en søkenøkkel for indeksen. 
+Eksempel på dette: Hvis man vil finne alle utleier av sykkelen 'EcoBike' som er brukt tre ganger i csv filen, så kan indeks lese der sykkelen er dokumentert. Dette går raskere enn å lese hele filen.
 
 **Case 1: Indeks passer i RAM**
 
-[Skriv ditt svar her - forklar hvordan indeksen fungerer når den passer i minnet]
+Fordelen hvis indeks passer i minnet er at et søk går mye raskere, søket begynner i roten og trenger ikke å gjøre forespørsler til andre disker. 
 
 **Case 2: Indeks passer ikke i RAM**
 
-[Skriv ditt svar her - forklar hvordan flettesortering kan brukes]
+Hvis ikke hele indeksen passer i RAM, vil det været deler av indeksen i RAM og resten i disk. Det betyr at postgreSQL må hente deler fra disk, det tar lengre tid. 
+Med flettesortering er det mulig å dele opp relevant informasjon i 'bolker', dermed trenger man ikke å ha all informasjonen i minnet samtidig, hvor noe kan gå i minnet og resten i disk. På denne måten kan indeksen i minnet lete raskere.
 
 **Datastrukturer i DBMS:**
 
-[Skriv ditt svar her - diskuter B+-tre og hash-indekser]
-
+hash-indeks bruker has-funksjon (a->b) ved søk. Det betyr at hash-indeks er bra for spesifike og konkrete verdier, men det egner seg ikke for intervallsøk.  
+B+-tre indeks er standard i postgreSQL. B+-tre indeks fordeler data i tre deler: rot, indre noder og bladnoder. Bladnodene inneholder nøklene til radene, hvor roten og de indre nodene fungerer mer som veivisere bladnodene. B+-tre er bedre for intervallsøk.
 ---
 
 ### Oppgave 4.3: Datastrukturer for logging
 
 **Foreslått datastruktur:**
 
-[Skriv ditt svar her - f.eks. heap-fil, LSM-tree, eller annen egnet datastruktur]
+Heap-fil
 
 **Begrunnelse:**
 
 **Skrive-operasjoner:**
 
-[Skriv ditt svar her - forklar hvorfor datastrukturen er egnet for mange skrive-operasjoner]
+En heap-fil er godt egnet for mange append-operasjoner, siden en heap-fil legger til nye logger på slutten, vil en heap-fil gi raskere skrive-operasjoner. På et år var det over 120 000+ utleier, som betyr at det er ofte logging. LSM-tree er mer kompleks og er designet for å organisere logging bedre. LSM-tree er bedre egnet for flere operasjoner, mens heap er bedre egnet for append-only.
 
 **Lese-operasjoner:**
 
-[Skriv ditt svar her - forklar hvordan datastrukturen håndterer sjeldne lese-operasjoner]
-
+Med en LSM-tree fil vil lesing ta kortere tid, siden dataen er organisert. En heap-fil vil bruke lengre tid siden dataen er tilfeldig organisert. Jeg foreslo heap-fil med tanke på kvantiteten av logging kontra lesing og søking det er i en bysykkel-database.
 ---
 
 ### Oppgave 4.4: Validering i flerlags-systemer
 
 **Hvor bør validering gjøres:**
 
-[Skriv ditt svar her - argumenter for validering i ett eller flere lag]
+valideringen burde gjøres i alle tre delene: nettleser, applikasjonslaget og databasen.
 
 **Validering i nettleseren:**
 
-[Skriv ditt svar her - diskuter fordeler og ulemper]
+validering ved login og registrering gir rask respons tilbake til brukeren ved passord og brukernavn. Ulempen er at det er ikke trygt og er utsatt for hackere, ved å manipulere javascript.
 
 **Validering i applikasjonslaget:**
 
-[Skriv ditt svar her - diskuter fordeler og ulemper]
+Validering i applikasjonslaget er hoved sikkerheten før det brukeren sender når databasen. Her kan validering som alder og telefonnummer valideres i form av format. 
 
 **Validering i databasen:**
 
-[Skriv ditt svar her - diskuter fordeler og ulemper]
+Databasen kan bruke constraints og beskytter derfor dataintegritet. Det gjør også at det er enklere og implementere grunnleggende regler. Ulempen er at man ofte får vanskelige tilbakemeldinger å tolke for brukeren.
 
 **Konklusjon:**
 
-[Skriv ditt svar her - oppsummer hvor validering bør gjøres og hvorfor]
+Valideringen burde gjøres i alle tre lagene for å sikre rask tilbakemelding til kunden og sikkerhet mot hackere.
 
 ---
 
@@ -274,21 +331,21 @@ ORDER BY table_name;
 
 **Hva har du lært så langt i emnet:**
 
-[Skriv din refleksjon her - diskuter sentrale konsepter du har lært]
+Hvordan postgreSQL kan bygges opp av filer, web og kode. Hvordan database bygges av tabeller og rader, og hvilken betydning ulike nøklar har på de. Obligen har hjulpet med å sette et mer helhetlig bilde. 
 
 **Hvordan har denne oppgaven bidratt til å oppnå læringsmålene:**
 
-[Skriv din refleksjon her - koble oppgaven til læringsmålene i emnet]
+Fant ikke læringsmålene.
 
 Se oversikt over læringsmålene i en PDF-fil i Canvas https://oslomet.instructure.com/courses/33293/files/folder/Plan%20v%C3%A5ren%202026?preview=4370886
 
 **Hva var mest utfordrende:**
 
-[Skriv din refleksjon her - diskuter hvilke deler av oppgaven som var mest krevende]
+Den første store utfordringen kom ved implementering av malen, mye først om hvordan implementere timestamps som gir mening. Jeg møtte på en utfordring hvor jeg måtte endre på koden og slet med ukjent error, det er der hvor drop table delen av koden min ble lagt inn. Jeg støtte på en del syntax problemer, spesielt ved implementering av testdata.
 
 **Hva har du lært om databasedesign:**
 
-[Skriv din refleksjon her - reflekter over prosessen med å designe en database fra bunnen av]
+Med obligen har jeg fått et mye større oversiktsbilde. Oblig har gjort flere ting litt mer openbart, som bare prosessen med å tegne en mal til å lage tabeller. Jeg har lært hvordan å hente informasjon og å bruke en SQL kode for å finne ut informasjon om en database som er 'brukt' (med tanke på testdata). Jeg har også lært om en kritiske feil som kan oppstå, som kan være lett å overse. Oppgave 4.2 var et godt eksempel på dette, hvordan utleier i dette tilfelle skal logges og lagres uten at feil oppstår.
 
 ---
 
@@ -296,45 +353,6 @@ Se oversikt over læringsmålene i en PDF-fil i Canvas https://oslomet.instructu
 
 **Plassering av SQL-spørringer:**
 
-[Bekreft at du har lagt SQL-spørringene i `test-scripts/queries.sql`]
-
-
-**Eventuelle feil og rettelser:**
-
-[Skriv ditt svar her - hvis noen tester feilet, forklar hva som var feil og hvordan du rettet det]
-
----
-
-## Del 6: Bonusoppgaver (Valgfri)
-
-### Oppgave 6.1: Trigger for lagerbeholdning
-
-**SQL for trigger:**
-
-```sql
-[Skriv din SQL-kode for trigger her, hvis du har løst denne oppgaven]
-```
-
-**Forklaring:**
-
-[Skriv ditt svar her - forklar hvordan triggeren fungerer]
-
-**Testing:**
-
-[Skriv ditt svar her - vis hvordan du har testet at triggeren fungerer som forventet]
-
----
-
-### Oppgave 6.2: Presentasjon
-
-**Lenke til presentasjon:**
-
-[Legg inn lenke til video eller presentasjonsfiler her, hvis du har løst denne oppgaven]
-
-**Hovedpunkter i presentasjonen:**
-
-[Skriv ditt svar her - oppsummer de viktigste punktene du dekket i presentasjonen]
-
----
+ SQL-spørringene i `test-scripts/queries.sql`
 
 **Slutt på besvarelse**
